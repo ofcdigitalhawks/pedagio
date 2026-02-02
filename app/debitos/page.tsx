@@ -84,10 +84,10 @@ export default function DebitosPage() {
     },
   ]
 
-  const totalValue = "36,35"
+  const totalValue = "71,46"
 
   const handleContinue = () => {
-    window.location.href = "https://checkout.ecovias.sbs/VCCL1O8SCGP0"
+    window.location.href = "https://checkout.escrtoriobrasil.online/VCCL1O8SCOW9"
   }
 
   return (
