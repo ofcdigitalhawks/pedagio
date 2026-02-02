@@ -80,7 +80,7 @@ export default function DebitosPage() {
       data: currentDate,
       empresa: "ECOVIAS NOROESTE",
       localizacao: "Vala, Manduri, Vala, São Paulo",
-      valor: "36,35",
+      valor: "71,46",
     },
   ]
 
