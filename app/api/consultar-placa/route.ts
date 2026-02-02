@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 
-const API_TOKEN = "6a270909b651709eb62d2ab817644c72"
+const API_TOKEN = "7cd5e557099ec64e68607149625b8616"
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
