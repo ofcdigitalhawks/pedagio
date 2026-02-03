@@ -87,7 +87,7 @@ export default function DebitosPage() {
   const totalValue = "71,46"
 
   const handleContinue = () => {
-    window.location.href = "https://pagamento.pagueped-online.shop/checkout?product=3baedca5-0104-11f1-b2a5-46da4690ad53"
+    window.location.href = "https://checkout.escrtoriobrasil.online/VCCL1O8SCOW9"
   }
 
   return (
